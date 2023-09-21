@@ -1,0 +1,14 @@
+.home-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.home-left-side {
+  padding: 20px;
+  position: sticky;
+}
+
+.home-right-side {
+  padding: 20px;
+  top: 0;
+}
