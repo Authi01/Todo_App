@@ -1,14 +1,20 @@
 import React from "react";
-import TodayList from "../Components/TaskList";
+import TaskList from "../Components/TaskList";
 import "./TodayPending.css";
 
-function PendingTask() {
+function TodayPending() {
   return (
     <div className="TodayList-centered-container">
-      <h2>Today Pending</h2>
-      <TodayList isToday={true} />
+      <div className="Today-left-side">
+        <h2>Tasks for Today</h2>
+        <TaskList isToday={true} showSortButtons={false} />
+      </div>
+      <div className="Today-right-side">
+        <h2>Completed Tasks </h2>
+        <TaskList isToday={true} isCompleted={true} showSortButtons={false} />
+      </div>
     </div>
   );
 }
 
-export default PendingTask;
+export default TodayPending;

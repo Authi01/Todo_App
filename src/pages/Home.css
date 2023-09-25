@@ -1,14 +1,18 @@
 .home-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: right;
+  align-items: flex-start;
 }
 
 .home-left-side {
-  padding: 20px;
+  padding: 50px;
+  width: 50%;
   position: sticky;
+  top: 0;
 }
 
 .home-right-side {
-  padding: 20px;
+  padding: 50px;
+  width: 50%;
   top: 0;
 }

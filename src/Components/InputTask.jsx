@@ -15,6 +15,7 @@ function TaskInput({ editTask, onEditCancel }) {
   );
 
   const [nameError, setNameError] = useState("");
+  const [DueDateError, setDueDateError] = useState("");
 
   const dispatch = useDispatch();
 
@@ -24,10 +25,19 @@ function TaskInput({ editTask, onEditCancel }) {
     if (name.trim() === "") {
       setNameError("Task name is required");
       isValid = false;
+    } else if (name.length > 50) {
+      setNameError("Task name is too long (max 50 characters)");
+      isValid = false;
     } else {
       setNameError("");
     }
 
+    if (dueDate.trim() === "") {
+      setDueDateError(" Due Date is required");
+      isValid = false;
+    } else {
+      setDueDateError("");
+    }
     return isValid;
   };
 
@@ -92,11 +102,14 @@ function TaskInput({ editTask, onEditCancel }) {
       <div className="input-row">
         <label htmlFor="taskDescription">Description:</label>
         <input
-          type="text"
+          type="text-area"
           id="taskDescription"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="task-input"
+          style={{
+            height: "100px",
+          }}
         />
       </div>
       <div className="input-row">
@@ -109,6 +122,7 @@ function TaskInput({ editTask, onEditCancel }) {
           className="task-input"
           min={getCurrentDate()}
         />
+        {DueDateError && <div className="error-message">{DueDateError}</div>}
       </div>
       <div className="input-row">
         <label htmlFor="taskPriority">Priority:</label>

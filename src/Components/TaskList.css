@@ -8,9 +8,9 @@
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
-  margin-right: 10px;
-  cursor: pointer;
   font-size: 14px;
+  margin: 7px;
+  cursor: pointer;
 }
 
 .tasklist-sort-button:hover {
@@ -20,6 +20,7 @@
 .tasklist-home-task-list {
   list-style-type: none;
   padding: 0;
+  max-width: auto;
 }
 
 .tasklist-home-task-item {
@@ -34,8 +35,8 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.tasklist-home-edit-button {
-  background-color: #007bff;
+.tasklist-home-edit-button,
+.tasklist-home-delete-button {
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -44,16 +45,12 @@
   font-size: 14px;
   margin-right: 5px;
 }
+.tasklist-home-edit-button {
+  background-color: #007bff;
+}
 
 .tasklist-home-delete-button {
   background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-right: 5px;
 }
 
 .tasklist-home-edit-button:hover,
@@ -106,4 +103,20 @@
   background-color: #fff;
   color: #333;
   border: 1px solid #ccc;
+}
+.tasklist-item-description {
+  overflow: hidden;
+  /* white-space: normal; */
+  text-overflow: normal;
+  max-width: 450px;
+  text-align: justify;
+}
+
+.tasklist-filter-input {
+  margin: 7px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 14px;
 }

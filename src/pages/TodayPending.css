@@ -1,8 +1,19 @@
-.centered-container {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  height: 100vh !important;
-  width: 100%;
+.TodayList-centered-container {
+  display: flex;
+  justify-content: right;
+  align-items: flex-start;
+}
+
+.Today-left-side {
+  padding: 50px;
+  width: 50%;
+  position: sticky;
+  top: 0;
+}
+
+.Today-right-side {
+  width: 50%;
+  overflow-y: auto;
+  max-height: 80vh;
+  padding: 50px;
 }

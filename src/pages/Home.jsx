@@ -13,11 +13,11 @@ function Home() {
 
   return (
     <div className="home-container">
-      <div className="home-right-side">
-        <h2>Task Input</h2>
+      <div className="home-left-side">
+        <h2>Add your Task here </h2>
         <TaskInput editTask={editTask} />
       </div>
-      <div className="home-left-side">
+      <div className="home-right-side">
         <h2>Task List</h2>
         <TaskList handleEditTask={handleEditTask} />
       </div>
