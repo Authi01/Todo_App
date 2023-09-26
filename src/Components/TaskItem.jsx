@@ -14,7 +14,7 @@ function TaskItem({
   handleEditChange,
 }) {
   return (
-    <li key={task.id} className="tasklist-home-task-item">
+    <div key={task.id} className="tasklist-home-task-item">
       {editingTask === task ? (
         <div>
           <input
@@ -111,7 +111,7 @@ function TaskItem({
           </div>
         </>
       )}
-    </li>
+    </div>
   );
 }
 
