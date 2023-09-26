@@ -1,42 +1,277 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* Css for Home  */
+
+.home-container {
+  display: flex;
+  justify-content: right;
+  align-items: flex-start;
+  overflow-x: hidden;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.home-left-side,
+.home-right-side {
+  padding: 50px;
+  width: 50%;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.scrollable-content {
+  height: 100%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.home-left-side {
+  padding: 50px;
+  width: 50%;
+  position: sticky;
+  top: 0;
 }
 
-.card {
-  padding: 2em;
+.home-right-side {
+  padding: 50px;
+  width: 50%;
+  top: 0;
 }
 
-.read-the-docs {
-  color: #888;
+/* completed Tasks */
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+  padding-left: 50px;
+  height: 100vh;
+  margin-left: 20px;
+  margin-right: 820px;
+}
+
+/* Input Task  */
+.task-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.input-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.input-row label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.task-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  height: 60px;
+}
+
+.add-button,
+.update-button,
+cancel-button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.add-button {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.update-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.error-message {
+  color: #dc3545;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #1c92d2;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-logo a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.navbar-links li {
+  font-size: 18px;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #4a4a4a;
+}
+
+/* Task List */
+.tasklist-sort-buttons {
+  margin-bottom: 10px;
+}
+
+.tasklist-sort-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  margin: 7px;
+  cursor: pointer;
+}
+
+.tasklist-sort-button:hover {
+  background-color: #0056b3;
+}
+
+.tasklist-home-task-list {
+  list-style-type: none;
+  padding: 0;
+  max-width: auto;
+}
+
+.tasklist-home-task-item {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tasklist-home-edit-button,
+.tasklist-home-delete-button {
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+.tasklist-home-edit-button {
+  background-color: #007bff;
+}
+
+.tasklist-home-delete-button {
+  background-color: #dc3545;
+}
+
+.tasklist-home-edit-button:hover,
+.tasklist-home-delete-button:hover {
+  background-color: #0056b3;
+}
+
+.tasklist-edit-input {
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.tasklist-save-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.tasklist-cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+.tasklist-name-bold {
+  font-weight: bold;
+}
+.tasklist-common-button {
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 5px;
+}
+
+.tasklist-common-button:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+.tasklist-save-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.tasklist-cancel-button {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+.tasklist-item-description {
+  overflow: hidden;
+  /* white-space: normal; */
+  text-overflow: normal;
+  max-width: 550px;
+  text-align: justify;
+}
+
+.tasklist-filter-input {
+  margin: 7px;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+  font-size: 14px;
 }

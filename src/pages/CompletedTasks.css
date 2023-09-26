@@ -1,9 +1,0 @@
-.centered-container {
-  display: flex;
-  flex-direction: column;
-  padding-top: 50px;
-  padding-left: 50px;
-  height: 100vh;
-  margin-left: 20px;
-  margin-right: 750px;
-}

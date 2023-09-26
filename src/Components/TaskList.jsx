@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteTask, updateTask, toggleTaskCompletion } from "../Redux/Slice";
-import "./TaskList.css";
+import TaskItem from "./TaskItem";
 
 function TaskList({
   isToday = false,
@@ -9,19 +9,22 @@ function TaskList({
   showSortButtons = true,
 }) {
   const tasks = useSelector((state) => state.tasks);
-
   const dispatch = useDispatch();
 
   const [editingTask, setEditingTask] = useState(null);
-  const [editedName, setEditedName] = useState("");
-  const [editedDescription, setEditedDescription] = useState("");
-  const [editedDueDate, setEditedDueDate] = useState("");
-  const [editedPriority, setEditedPriority] = useState("Medium");
-  const [editNameError, setEditNameError] = useState("");
-  const [editDueDateError, setEditDueDateError] = useState("");
-  const [startDate, setStartDate] = useState("2023-01-01");
-  const [endDate, setEndDate] = useState("2023-12-31");
   const [dueDateFilteredTasks, setDueDateFilteredTasks] = useState([]);
+  const [sortBy, setSortBy] = useState({ dueDate: false, priority: false });
+  const [editError, setEditError] = useState({ name: "", dueDate: "" });
+  const [editedTask, setEditedTask] = useState({
+    name: "",
+    description: "",
+    dueDate: "",
+    priority: "Medium",
+  });
+  const [dateRange, setDateRange] = useState({
+    startDate: "2023-01-01",
+    endDate: "2023-12-31",
+  });
 
   const handleDeleteTask = (taskId) => {
     dispatch(deleteTask(taskId));
@@ -29,28 +32,29 @@ function TaskList({
 
   const handleEditClick = (task) => {
     setEditingTask(task);
-    setEditedName(task.name);
-    setEditedDescription(task.description);
-    setEditedDueDate(task.dueDate);
-    setEditedPriority(task.priority);
+    setEditedTask({
+      name: task.name,
+      description: task.description,
+      dueDate: task.dueDate,
+      priority: task.priority,
+    });
   };
-
   const handleSaveEdit = () => {
-    if (editedName.trim() === "") {
-      setEditNameError("Task name is required");
+    if (editedTask.name.trim() === "") {
+      setEditError({ ...editError, name: "Task name is required" });
       isValid = false;
     } else {
-      setEditNameError("");
+      setEditError({ ...editError, name: "" });
     }
 
-    if (editedDueDate.trim() === "") {
-      setEditDueDateError(" Due Date is required");
+    if (editedTask.dueDate.trim() === "") {
+      setEditError({ ...editError, dueDate: "Due Date is required" });
       isValid = false;
     } else {
-      setEditDueDateError("");
+      setEditError({ ...editError, dueDate: "" });
     }
 
-    if (new Date(editedDueDate) < new Date(editingTask.creationDate)) {
+    if (new Date(editedTask.dueDate) < new Date(editingTask.creationDate)) {
       alert("Due date cannot be earlier than creation date.");
       return;
     }
@@ -58,20 +62,19 @@ function TaskList({
     dispatch(
       updateTask({
         ...editingTask,
-        name: editedName,
-        description: editedDescription,
-        dueDate: editedDueDate,
-        priority: editedPriority,
+        name: editedTask.name,
+        description: editedTask.description,
+        dueDate: editedTask.dueDate,
+        priority: editedTask.priority,
       })
     );
     setEditingTask(null);
   };
-
   const handleCancelEdit = () => {
     setEditingTask(null);
   };
 
-  const sortTasksByDueDate = () => {
+  const sortTasksByDueDate = (tasks) => {
     const sortedTasks = [...tasks];
     sortedTasks.sort((a, b) => {
       if (!a.dueDate || !b.dueDate) return 0;
@@ -89,18 +92,39 @@ function TaskList({
     return sortedTasks;
   };
 
-  const [sortByDueDate, setSortByDueDate] = useState(false);
-  const [sortByPriority, setSortByPriority] = useState(false);
+  const handleEditChange = (field, value) => {
+    setEditedTask((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
   const handleSortByDueDate = () => {
-    setSortByDueDate(true);
-    setSortByPriority(false);
+    setSortBy({ ...sortBy, dueDate: true, priority: false });
   };
 
   const handleSortByPriority = () => {
-    setSortByDueDate(false);
-    setSortByPriority(true);
+    setSortBy({ ...sortBy, dueDate: false, priority: true });
   };
+  const filterTasksByDueDate = (tasks, startDate, endDate) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    return tasks.filter((task) => {
+      const dueDate = new Date(task.dueDate);
+      return dueDate >= start && dueDate <= end;
+    });
+  };
+  useEffect(() => {
+    if (dateRange.startDate && dateRange.endDate) {
+      const filteredTasks = filterTasksByDueDate(
+        tasks,
+        dateRange.startDate,
+        dateRange.endDate
+      );
+      setDueDateFilteredTasks(filteredTasks);
+    }
+  }, [dateRange.startDate, dateRange.endDate, tasks]);
 
   function getCurrentDate() {
     const today = new Date();
@@ -109,17 +133,6 @@ function TaskList({
     const day = String(today.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
-
-  useEffect(() => {
-    const dueDateFilteredTasks = tasks.filter((task) => {
-      const dueDate = new Date(task.dueDate);
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-
-      return dueDate >= start && dueDate <= end;
-    });
-    setDueDateFilteredTasks(filteredTasks);
-  }, [startDate, endDate, tasks]);
 
   const today = new Date();
   today.setHours(5, 30, 0, 0);
@@ -144,9 +157,9 @@ function TaskList({
     dispatch(toggleTaskCompletion(taskId));
   };
 
-  const sortedTasksArray = sortByDueDate
-    ? sortTasksByDueDate()
-    : sortByPriority
+  const sortedTasksArray = sortBy.dueDate
+    ? sortTasksByDueDate(dueDateFilteredTasks)
+    : sortBy.priority
     ? sortTasksByPriority()
     : filteredTasks;
 
@@ -158,16 +171,20 @@ function TaskList({
             <input
               type="date"
               id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
+              value={dateRange.startDate}
+              onChange={(e) =>
+                setDateRange({ ...dateRange, startDate: e.target.value })
+              }
               className="tasklist-filter-input"
               placeholder="From Due Date"
             />
             <input
               type="date"
               id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={dateRange.endDate}
+              onChange={(e) =>
+                setDateRange({ ...dateRange, endDate: e.target.value })
+              }
               className="tasklist-filter-input"
               placeholder="To Due Date"
             />
@@ -175,14 +192,14 @@ function TaskList({
             <button
               onClick={handleSortByDueDate}
               className="tasklist-sort-button"
-              style={sortByDueDate ? { backgroundColor: "#0056b3" } : {}}
+              style={sortBy.dueDate ? { backgroundColor: "#0056b3" } : {}}
             >
               Sort by Due Date
             </button>
             <button
               onClick={handleSortByPriority}
               className="tasklist-sort-button"
-              style={sortByPriority ? { backgroundColor: "#0056b3" } : {}}
+              style={sortBy.priority ? { backgroundColor: "#0056b3" } : {}}
             >
               Sort by Priority
             </button>
@@ -190,106 +207,20 @@ function TaskList({
         )}
       </div>
       {sortedTasksArray.map((task) => (
-        <li key={task.id} className="tasklist-home-task-item">
-          {editingTask === task ? (
-            <div>
-              <input
-                type="text"
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                className="tasklist-edit-input"
-              />
-              {editNameError && (
-                <div className="error-message">{editNameError}</div>
-              )}
-              <input
-                type="text"
-                value={editedDescription}
-                onChange={(e) => setEditedDescription(e.target.value)}
-                className="tasklist-edit-input"
-              />
-              <input
-                type="date"
-                id="taskDueDate"
-                value={editedDueDate}
-                onChange={(e) => setEditedDueDate(e.target.value)}
-                className="tasklist-edit-input"
-                min={getCurrentDate()}
-              />
-              {editDueDateError && (
-                <div className="error-message">{editDueDateError}</div>
-              )}
-              <select
-                value={editedPriority}
-                onChange={(e) => setEditedPriority(e.target.value)}
-                className="tasklist-edit-input"
-              >
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-              <button
-                onClick={handleSaveEdit}
-                className="tasklist-common-button tasklist-save-button"
-              >
-                Save
-              </button>
-              <button
-                onClick={handleCancelEdit}
-                className="tasklist-common-button tasklist-cancel-button"
-              >
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="tasklist-item-details">
-                <div className="tasklist-item-name tasklist-name-bold">
-                  {task.name}
-                </div>
-                <div className="tasklist-item-description">
-                  {task.description}
-                </div>
-                <div className="tasklist-item-name tasklist-name-bold">
-                  Due Date: {task.dueDate}
-                  {new Date(task.dueDate) < new Date(task.creationDate) && (
-                    <span className="invalid-due-date">
-                      Due date cannot be earlier than creation date.
-                    </span>
-                  )}
-                </div>
-                <div className="tasklist-item-name tasklist-name-bold">
-                  Priority: {task.priority}
-                </div>
-              </div>
-
-              <div className="tasklist-item-buttons">
-                <div className="tasklist-item-completed">
-                  <label>
-                    Completed:{" "}
-                    <input
-                      type="checkbox"
-                      checked={task.isCompleted}
-                      onChange={() => handleToggleTaskCompletion(task.id)}
-                    />
-                  </label>
-                </div>
-                <button
-                  onClick={() => handleEditClick(task)}
-                  className="tasklist-home-edit-button"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteTask(task.id)}
-                  className="tasklist-home-delete-button"
-                >
-                  Delete
-                </button>
-              </div>
-            </>
-          )}
-        </li>
+        <TaskItem
+          key={task.id}
+          task={task}
+          editingTask={editingTask}
+          editedTask={editedTask}
+          editError={editError}
+          handleEditClick={handleEditClick}
+          handleSaveEdit={handleSaveEdit}
+          handleCancelEdit={handleCancelEdit}
+          handleToggleTaskCompletion={handleToggleTaskCompletion}
+          getCurrentDate={getCurrentDate}
+          handleDeleteTask={handleDeleteTask}
+          handleEditChange={handleEditChange}
+        />
       ))}
     </div>
   );

@@ -1,6 +1,5 @@
 import TaskList from "../Components/TaskList";
 import React from "react";
-import "./CompletedTasks.css";
 
 function CompletedTask() {
   return (

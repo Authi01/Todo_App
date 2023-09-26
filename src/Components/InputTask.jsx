@@ -1,43 +1,47 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addTask, updateTask } from "../Redux/Slice";
-import { toast } from "react-toastify";
-import "./InputTask.css";
+import { addTask } from "../Redux/Slice";
 
-function TaskInput({ editTask, onEditCancel }) {
-  const [name, setName] = useState(editTask ? editTask.name : "");
-  const [description, setDescription] = useState(
-    editTask ? editTask.description : ""
-  );
-  const [dueDate, setDueDate] = useState(editTask ? editTask.dueDate : "");
-  const [priority, setPriority] = useState(
-    editTask ? editTask.priority : "Medium"
-  );
-
-  const [nameError, setNameError] = useState("");
-  const [DueDateError, setDueDateError] = useState("");
+function TaskInput({}) {
+  const [details, setDetails] = useState({
+    name: "",
+    description: "",
+    dueDate: "",
+    priority: "Medium",
+  });
+  const [Error, setError] = useState({ name: "", dueDate: "" });
 
   const dispatch = useDispatch();
 
   const validateInputs = () => {
     let isValid = true;
 
-    if (name.trim() === "") {
-      setNameError("Task name is required");
+    if (details.name.trim() === "") {
+      setError((prevError) => ({
+        ...prevError,
+        name: "Task name is required",
+      }));
       isValid = false;
-    } else if (name.length > 50) {
-      setNameError("Task name is too long (max 50 characters)");
+    } else if (details.name.length > 50) {
+      setError((prevError) => ({
+        ...prevError,
+        name: "Task name is too long (max 50 characters)",
+      }));
       isValid = false;
     } else {
-      setNameError("");
+      setError((prevError) => ({ ...prevError, name: "" }));
     }
 
-    if (dueDate.trim() === "") {
-      setDueDateError(" Due Date is required");
+    if (details.dueDate.trim() === "") {
+      setError((prevError) => ({
+        ...prevError,
+        dueDate: " Due Date is required",
+      }));
       isValid = false;
     } else {
-      setDueDateError("");
+      setError((prevError) => ({ ...prevError, dueDate: "" }));
     }
+
     return isValid;
   };
 
@@ -46,18 +50,19 @@ function TaskInput({ editTask, onEditCancel }) {
       dispatch(
         addTask({
           id: Date.now(),
-          name,
-          description,
-          dueDate,
-          priority,
+          name: details.name,
+          description: details.description,
+          dueDate: details.dueDate,
+          priority: details.priority,
         })
       );
-      setName("");
-      setDescription("");
-      setDueDate("");
-      setPriority("Medium");
-    } else {
-      toast.error("Please fill in the required fields.");
+
+      setDetails({
+        name: "",
+        description: "",
+        dueDate: "",
+        priority: "Medium",
+      });
     }
   };
 
@@ -69,23 +74,6 @@ function TaskInput({ editTask, onEditCancel }) {
     return `${year}-${month}-${day}`;
   }
 
-  const handleUpdateTask = () => {
-    if (validateInputs()) {
-      dispatch(
-        updateTask({
-          id: editTask.id,
-          name,
-          description,
-          dueDate,
-          priority,
-        })
-      );
-      onEditCancel();
-    } else {
-      toast.error("Please fill in the required fields.");
-    }
-  };
-
   return (
     <div className="task-input-container">
       <div className="input-row">
@@ -93,19 +81,20 @@ function TaskInput({ editTask, onEditCancel }) {
         <input
           type="text"
           id="taskName"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={details.name}
+          onChange={(e) => setDetails({ ...details, name: e.target.value })}
           className="task-input"
         />
-        {nameError && <div className="error-message">{nameError}</div>}
+        {Error.name && <div className="error-message">{Error.name}</div>}
       </div>
       <div className="input-row">
         <label htmlFor="taskDescription">Description:</label>
-        <input
-          type="text-area"
+        <textarea
           id="taskDescription"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={details.description}
+          onChange={(e) =>
+            setDetails({ ...details, description: e.target.value })
+          }
           className="task-input"
           style={{
             height: "100px",
@@ -117,19 +106,19 @@ function TaskInput({ editTask, onEditCancel }) {
         <input
           type="date"
           id="taskDueDate"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
+          value={details.dueDate}
+          onChange={(e) => setDetails({ ...details, dueDate: e.target.value })}
           className="task-input"
           min={getCurrentDate()}
         />
-        {DueDateError && <div className="error-message">{DueDateError}</div>}
+        {Error.dueDate && <div className="error-message">{Error.dueDate}</div>}
       </div>
       <div className="input-row">
         <label htmlFor="taskPriority">Priority:</label>
         <select
           id="taskPriority"
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
+          value={details.priority}
+          onChange={(e) => setDetails({ ...details, priority: e.target.value })}
           className="task-input"
         >
           <option value="High">High</option>
@@ -137,20 +126,10 @@ function TaskInput({ editTask, onEditCancel }) {
           <option value="Low">Low</option>
         </select>
       </div>
-      {editTask ? (
-        <>
-          <button onClick={handleUpdateTask} className="update-button">
-            Update Task
-          </button>
-          <button onClick={onEditCancel} className="cancel-button">
-            Cancel
-          </button>
-        </>
-      ) : (
-        <button onClick={handleAddTask} className="add-button">
-          Add Task
-        </button>
-      )}
+
+      <button onClick={handleAddTask} className="add-button">
+        Add Task
+      </button>
     </div>
   );
 }
